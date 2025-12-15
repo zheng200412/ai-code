@@ -5,8 +5,11 @@ import com.zzz.aicode.common.BaseResponse;
 import com.zzz.aicode.common.ResultUtils;
 import com.zzz.aicode.exception.ErrorCode;
 import com.zzz.aicode.exception.ThrowUtils;
+import com.zzz.aicode.model.dto.UserLoginRequest;
 import com.zzz.aicode.model.dto.UserRegisterRequest;
+import com.zzz.aicode.model.vo.LoginUserVO;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -111,6 +114,15 @@ public class UserController {
     @GetMapping("page")
     public Page<User> page(Page<User> page) {
         return userService.page(page);
+    }
+
+    @PostMapping("/login")
+    public BaseResponse<LoginUserVO> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
+        ThrowUtils.throwIf(userLoginRequest == null, ErrorCode.PARAMS_ERROR);
+        String userAccount = userLoginRequest.getUserAccount();
+        String userPassword = userLoginRequest.getUserPassword();
+        LoginUserVO loginUserVO = userService.userLogin(userAccount, userPassword, request);
+        return ResultUtils.success(loginUserVO);
     }
 
 }

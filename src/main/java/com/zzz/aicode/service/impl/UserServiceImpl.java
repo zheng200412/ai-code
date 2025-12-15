@@ -1,5 +1,6 @@
 package com.zzz.aicode.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
@@ -8,9 +9,13 @@ import com.zzz.aicode.exception.ErrorCode;
 import com.zzz.aicode.model.entity.User;
 import com.zzz.aicode.mapper.UserMapper;
 import com.zzz.aicode.model.enums.UserRoleEnum;
+import com.zzz.aicode.model.vo.LoginUserVO;
 import com.zzz.aicode.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+
+import static com.zzz.aicode.model.consatnt.UserConstant.USER_LOGIN_STATE;
 
 /**
  * 用户 服务层实现。
@@ -64,5 +69,43 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>  implements U
         return DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
     }
 
+    @Override
+    public LoginUserVO getLoginUserVO(User user) {
+        if (user == null) {
+            return null;
+        }
+        LoginUserVO loginUserVO = new LoginUserVO();
+        BeanUtil.copyProperties(user, loginUserVO);
+        return loginUserVO;
+    }
+
+    @Override
+    public LoginUserVO userLogin(String userAccount, String userPassword, HttpServletRequest request) {
+        // 1. 校验
+        if (StrUtil.hasBlank(userAccount, userPassword)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
+        }
+        if (userAccount.length() < 4) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号错误");
+        }
+        if (userPassword.length() < 8) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码错误");
+        }
+        // 2. 加密
+        String encryptPassword = getEncryptPassword(userPassword);
+        // 查询用户是否存在
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("userAccount", userAccount);
+        queryWrapper.eq("userPassword", encryptPassword);
+        User user = this.mapper.selectOneByQuery(queryWrapper);
+        // 用户不存在
+        if (user == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户不存在或密码错误");
+        }
+        // 3. 记录用户的登录态
+        request.getSession().setAttribute(USER_LOGIN_STATE, user);
+        // 4. 获得脱敏后的用户信息
+        return this.getLoginUserVO(user);
+    }
 
 }
