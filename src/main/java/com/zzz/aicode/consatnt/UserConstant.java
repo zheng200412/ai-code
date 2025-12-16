@@ -1,4 +1,4 @@
-package com.zzz.aicode.model.consatnt;
+package com.zzz.aicode.consatnt;
 
 public interface UserConstant {
 
