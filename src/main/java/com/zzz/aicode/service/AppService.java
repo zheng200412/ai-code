@@ -7,8 +7,10 @@ import com.zzz.aicode.model.dto.app.AppAddRequest;
 import com.zzz.aicode.model.dto.app.AppQueryRequest;
 import com.zzz.aicode.model.dto.app.AppUpdateRequest;
 import com.zzz.aicode.model.entity.App;
+import com.zzz.aicode.model.entity.User;
 import com.zzz.aicode.model.vo.AppVO;
 import jakarta.servlet.http.HttpServletRequest;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -39,4 +41,14 @@ public interface AppService extends IService<App> {
      * @return
      */
     QueryWrapper getQueryWrapper(AppQueryRequest appQueryRequest);
+
+    /**
+     * 通过对话生成应用代码
+     *
+     * @param appId 应用ID
+     * @param message 提示词
+     * @param loginUser 登陆用户
+     * @return
+     */
+    Flux<String> chatToGenCode(Long appId, String message, User loginUser);
 }
