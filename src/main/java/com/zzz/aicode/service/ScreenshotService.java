@@ -1,4 +1,4 @@
-package com.zzz.aicode.service.impl;
+package com.zzz.aicode.service;
 
 /**
  * 截图服务

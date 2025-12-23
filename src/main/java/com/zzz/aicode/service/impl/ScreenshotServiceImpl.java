@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.zzz.aicode.exception.ErrorCode;
 import com.zzz.aicode.exception.ThrowUtils;
 import com.zzz.aicode.manager.CosManager;
+import com.zzz.aicode.service.ScreenshotService;
 import com.zzz.aicode.utils.WebScreenshotUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;

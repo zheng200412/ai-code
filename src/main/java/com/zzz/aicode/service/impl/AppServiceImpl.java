@@ -24,6 +24,7 @@ import com.zzz.aicode.model.vo.AppVO;
 import com.zzz.aicode.model.vo.UserVO;
 import com.zzz.aicode.service.AppService;
 import com.zzz.aicode.service.ChatHistoryService;
+import com.zzz.aicode.service.ScreenshotService;
 import com.zzz.aicode.service.UserService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
