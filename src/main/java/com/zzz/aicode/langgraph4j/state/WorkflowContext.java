@@ -1,6 +1,7 @@
 package com.zzz.aicode.langgraph4j.state;
 
 import com.zzz.aicode.langgraph4j.model.ImageResource;
+import com.zzz.aicode.langgraph4j.model.QualityResult;
 import com.zzz.aicode.model.enums.CodeGenTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,11 @@ public class WorkflowContext implements Serializable {
      * WorkflowContext 在 MessagesState 中的存储key
      */
     public static final String WORKFLOW_CONTEXT_KEY = "workflowContext";
+
+    /**
+     * 质量检查结果
+     */
+    private QualityResult qualityResult;
 
     /**
      * 当前执行步骤
