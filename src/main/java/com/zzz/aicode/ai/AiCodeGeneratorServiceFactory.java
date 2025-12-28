@@ -3,6 +3,7 @@ package com.zzz.aicode.ai;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.zzz.aicode.ai.guardrail.PromptSafetyInputGuardrail;
+import com.zzz.aicode.ai.guardrail.RetryOutputGuardrail;
 import com.zzz.aicode.ai.tools.*;
 import com.zzz.aicode.exception.BusinessException;
 import com.zzz.aicode.exception.ErrorCode;
@@ -110,6 +111,8 @@ public class AiCodeGeneratorServiceFactory {
                                 toolExecutionRequest, "Error: there is no tool called " + toolExecutionRequest.name()
                         ))
                         .inputGuardrails(new PromptSafetyInputGuardrail())  // 添加输入护轨
+//                        .outputGuardrails(new RetryOutputGuardrail()) 为了流式输出，这里不用护轨
+                        .maxSequentialToolsInvocations(20)  // 最多连续调用 20 次工具
                         .build();
             }
             case HTML, MULTI_FILE -> {
@@ -120,6 +123,8 @@ public class AiCodeGeneratorServiceFactory {
                         .streamingChatModel(openAiStreamingChatModel)
                         .chatMemory(chatMemory)
                         .inputGuardrails(new PromptSafetyInputGuardrail())  // 添加输入护轨
+//                        .outputGuardrails(new RetryOutputGuardrail())
+                        .maxSequentialToolsInvocations(20)  // 最多连续调用 20 次工具
                         .build();
             }
             default -> throw new BusinessException(ErrorCode.SYSTEM_ERROR,
